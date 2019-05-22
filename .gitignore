@@ -1,5 +1,7 @@
+# Ignore Gradle project-specific cache directory
 .gradle
-/build/
+# Ignore Gradle build output directories
+build
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -12,3 +14,7 @@ gradle-app.setting
 
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
+
+# Ignore IntelliJ files
+.idea
+*.iml
