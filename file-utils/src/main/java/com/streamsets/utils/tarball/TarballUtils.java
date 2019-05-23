@@ -30,21 +30,24 @@ public abstract class TarballUtils {
   }
 
   /**
+   * <p>
    * Adapted from StackOverflow answer
+   * </p>
    *
-   * @see: <a href="https://stackoverflow.com/a/7556307/375670>Source</a>
+   * @see <a href="https://stackoverflow.com/a/7556307/375670">Source</a>
    *
+   * <p>
    * Untar an input file into an output file.
    * The output file is created in the output folder, having the same name
    * as the input file, minus the '.tar' extension.
+   * </p>
    *
    * @param inputFile     the input .tar file
    * @param outputDir     the output directory file.
-   * @throws java.io.IOException
-   * @throws java.io.FileNotFoundException
+   * @throws IOException if thrown by any underlying libraries
+   * @throws ArchiveException if thrown by any underlying libraries
    *
    * @return The {@link List} of {@link File}s with the untared content.
-   * @throws ArchiveException if thrown by any underlying libraries
    */
   @SuppressWarnings("squid:S3776")
   public static List<File> unTar(final File inputFile, final File outputDir) throws
@@ -94,18 +97,19 @@ public abstract class TarballUtils {
   }
 
   /**
-   * @see: <a href="https://stackoverflow.com/a/7556307/375670>Source</a>
+   * @see <a href="https://stackoverflow.com/a/7556307/375670">Source</a>
    *
    * Ungzip an input file into an output file.
    * <p>
    * The output file is created in the output folder, having the same name
    * as the input file, minus the '.gz' extension.
+   * </p>
    *
    * @param inputFile     the input .gz file
    * @param outputDir     the output directory file.
    * @throws IOException if thrown by any underlying libraries
    *
-   * @return The {@File} with the ungzipped content.
+   * @return The {@link File} with the ungzipped content.
    */
   public static File unGzip(final File inputFile, final File outputDir) throws IOException {
     if (LOG.isInfoEnabled()) {

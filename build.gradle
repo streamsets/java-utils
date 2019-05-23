@@ -11,6 +11,8 @@ plugins {
     id 'java-library'
     // distribution plugin to build distribution
     id 'distribution'
+    // publish artifacts to Maven
+    id 'maven-publish'
 }
 
 group = projectGroup
@@ -22,11 +24,20 @@ repositories {
     // You can declare any Maven/Ivy/file repository here.
     mavenLocal()
     jcenter()
+
+    maven {
+        url = 'https://repo.streamsets.net/artifactory/libs-release'
+    }
+
+    maven {
+        url = 'https://repo.streamsets.net/artifactory/libs-snapshot'
+    }
 }
 
 // Configuration common to all subprojects
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'maven-publish'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -43,8 +54,29 @@ subprojects {
         from sourceSets.test.output
     }
 
+    task javadocJar(type: Jar) {
+        from javadoc
+        archiveClassifier = 'javadoc'
+    }
+
+    javadoc {
+        if(JavaVersion.current().isJava9Compatible()) {
+            options.addBooleanOption('html5', true)
+        }
+    }
+
     jar {
         archiveBaseName = "${jarName}-${rootProject.version}"
+    }
+
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                from(components.java)
+                artifact sourceJar
+                artifact javadocJar
+            }
+        }
     }
 }
 
@@ -62,6 +94,24 @@ distributions {
             into('tests') {
                 from project('file-utils').configurations.testRuntimeClasspath
                 from project('file-utils').tasks.testJar
+            }
+            into('javadocs') {
+                from project('file-utils').tasks.javadocJar
+            }
+        }
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name 'artifactory'
+            def releaseRepoUrl = 'https://repo.streamsets.net/artifactory/libs-release-local'
+            def snapshotRepoUrl = 'https://repo.streamsets.net/artifactory/libs-snapshot-local'
+            url = version.endsWith('SNAPSHOT') ? snapshotRepoUrl : releaseRepoUrl
+            credentials {
+                username = publishingUsername
+                password = publishingPassword
             }
         }
     }

@@ -15,128 +15,150 @@ import java.util.Set;
 /**
  * Adapted from
  * @see <a href="https://github.com/apache/servicecomb-java-chassis/blob/master/foundations/foundation-common/src/main/java/org/apache/servicecomb/foundation/common/utils/FilePerm.java">this source</a>
- *
+ * <p>
  * This source is copied from an Apache 2.0 licensed project (apache/servicecomb-java-chassis).  We are reproducing the
  * code here because the project is apparently only packaged as pom (and not jar)
+ * </p>
  */
 public abstract class FileUtils {
+  /**
+   * permission bit or user read
+   */
   public static final int FILE_PERM_UREAD = 256;
 
   /**
-   * owner 可写
+   * permission bit for user write
    */
   public static final int FILE_PERM_UWRITE = 128;
 
   /**
-   * owner 可执行
+   * permission bit for user execute
    */
   public static final int FILE_PERM_UEXEC = 64;
 
   /**
-   * 同组可读
+   * permission bit for group read
    */
   public static final int FILE_PERM_GREAD = 32;
 
   /**
-   * 同组可写
+   * permission bit for group write
    */
   public static final int FILE_PERM_GWRITE = 16;
 
   /**
-   * 同组可执行
+   * permission bit for group execute
    */
   public static final int FILE_PERM_GEXEC = 8;
 
   /**
-   * 其他可读
+   * permission bit for other read
    */
   public static final int FILE_PERM_OREAD = 4;
 
   /**
-   * 其他可写
+   * permission bit for other write
    */
   public static final int FILE_PERM_OWRITE = 2;
 
   /**
-   * 其他可执行
+   * permission bit for other exec
    */
   public static final int FILE_PERM_OEXEC = 1;
 
   /**
-   * mask
+   * private constructor for utility class
    */
-  public static final int FILE_PERM_MASK = 511;
-
-
   private FileUtils() {
     // no-op, to prevent creation
   }
 
   /**
-   * owner是否可读
+   * Checks whether user can read, given an int representation of the POSIX permissions
+   * @param perm int representation of POSIX permissions
+   * @return whether the user can read, given the permissions
    */
   public static boolean uCanRead(int perm) {
     return (FILE_PERM_UREAD & perm) > 0;
   }
 
   /**
-   * owner是否可写
+   * Checks whether user can write, given an int representation of the POSIX permissions
+   * @param perm int representation of POSIX permissions
+   * @return whether the user can write, given the permissions
    */
   public static boolean uCanWrite(int perm) {
     return (FILE_PERM_UWRITE & perm) > 0;
   }
 
   /**
-   * owner是否可执行
+   * Checks whether user can execute, given an int representation of the POSIX permissions
+   * @param perm int representation of POSIX permissions
+   * @return whether the user can execute, given the permissions
    */
   public static boolean uCanExec(int perm) {
     return (FILE_PERM_UEXEC & perm) > 0;
   }
 
   /**
-   * 同组是否可读
+   * Checks whether group can read, given an int representation of the POSIX permissions
+   * @param perm int representation of POSIX permissions
+   * @return whether the group can read, given the permissions
    */
   public static boolean gCanRead(int perm) {
     return (FILE_PERM_GREAD & perm) > 0;
   }
 
   /**
-   * 同组是否可写
+   * Checks whether group can write, given an int representation of the POSIX permissions
+   * @param perm int representation of POSIX permissions
+   * @return whether the group can write, given the permissions
    */
   public static boolean gCanWrite(int perm) {
     return (FILE_PERM_GWRITE & perm) > 0;
   }
 
   /**
-   * 同组是否可执行
+   * Checks whether group can exec, given an int representation of the POSIX permissions
+   * @param perm int representation of POSIX permissions
+   * @return whether the group can exec, given the permissions
    */
   public static boolean gCanExec(int perm) {
     return (FILE_PERM_GEXEC & perm) > 0;
   }
 
   /**
-   * 其他是否可读
+   * Checks whether others can read, given an int representation of the POSIX permissions
+   * @param perm int representation of POSIX permissions
+   * @return whether others can read, given the permissions
    */
   public static boolean oCanRead(int perm) {
-    return (FILE_PERM_GREAD & perm) > 0;
+    return (FILE_PERM_OREAD & perm) > 0;
   }
 
   /**
-   * 其他是否可写
+   * Checks whether others can write, given an int representation of the POSIX permissions
+   * @param perm int representation of POSIX permissions
+   * @return whether others can write, given the permissions
    */
   public static boolean oCanWrite(int perm) {
-    return (FILE_PERM_GWRITE & perm) > 0;
+    return (FILE_PERM_OWRITE & perm) > 0;
   }
 
   /**
-   * 其他是否可执行
+   * Checks whether others can exec, given an int representation of the POSIX permissions
+   * @param perm int representation of POSIX permissions
+   * @return whether others can exec, given the permissions
    */
   public static boolean oCanExec(int perm) {
-    return (FILE_PERM_GEXEC & perm) > 0;
+    return (FILE_PERM_OEXEC & perm) > 0;
   }
 
   /**
-   * 获取Posix权限
+   * Converts an integer representation of POSIX permissions to a {@link Set} of {@link PosixFilePermission}
+   *
+   * @param perm the integer representation of permissions
+   * @return the permissions expressed as a set of the appropriate Java type
    */
   public static Set<PosixFilePermission> getPosixPerm(int perm) {
     StringBuilder permStr = new StringBuilder();
@@ -154,6 +176,13 @@ public abstract class FileUtils {
     return PosixFilePermissions.fromString(permStr.toString());
   }
 
+  /**
+   * Checks a directory for all jar files, and returns them as an array of {@link URL} instances.  Most useful
+   * for configuring {@link java.net.URLClassLoader} instances.
+   *
+   * @param directory the directory from which jar files will be listed
+   * @return an array of {@link URL} instances corresponding to each jar file found in the given directory
+   */
   public static URL[] getJarUrlsInDirectory(final String directory) {
     final Path dirPath = Paths.get(directory);
     if (!dirPath.toFile().exists()) {
